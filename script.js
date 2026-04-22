@@ -1,6 +1,6 @@
 const dataset = [
   {
-    id: "PR-102481",
+    id: "102481",
     name: "Beta Overview",
     category: "Group 3600",
     status: "Active",
@@ -8,7 +8,7 @@ const dataset = [
     description: "General note about record updates, ownership changes, and follow-up items captured in a longer paragraph. The text stays intentionally extended so the interface can still exercise freeform matching and longer dropdown excerpts."
   },
   {
-    id: "PR-104223",
+    id: "104223",
     name: "Client 123AM",
     category: "Group 3610",
     status: "Draft",
@@ -16,7 +16,7 @@ const dataset = [
     description: "Placeholder summary containing review steps, related references, and action items that still read naturally outside of any industry-specific context. This gives the dropdown more realistic mixed keyword and number suggestions."
   },
   {
-    id: "PR-107532",
+    id: "107532",
     name: "Type Fault",
     category: "Group 3620",
     status: "Archived",
@@ -24,7 +24,7 @@ const dataset = [
     description: "Archived record snapshot with neutral commentary, grouped metadata, and context notes. It remains useful for validating chips, grouped suggestions, and table styling under the same visual system."
   },
   {
-    id: "PR-204220",
+    id: "204220",
     name: "Gamma Snapshot",
     category: "Project",
     status: "Active",
@@ -32,7 +32,7 @@ const dataset = [
     description: "Follow-up line item with handoff notes, section references, and a paragraph-length summary to simulate denser records when we search inside long descriptive cells."
   },
   {
-    id: "PR-431900",
+    id: "431900",
     name: "Echo Notes",
     category: "Location",
     status: "Review",
@@ -145,6 +145,14 @@ function highlightDescription(text, query) {
   return escapeHtml(text).replace(matcher, "<mark>$1</mark>");
 }
 
+function truncateText(text, maxLength = 100) {
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return `${text.slice(0, maxLength - 1)}…`;
+}
+
 function getActiveHighlightQuery() {
   const liveQuery = searchInput.value.trim();
 
@@ -214,12 +222,12 @@ function renderRows(rows) {
 
   resultsBody.innerHTML = rows.map((row) => `
     <tr>
+      <td>${formatDate(row.updated)}</td>
       <td>${escapeHtml(row.id)}</td>
       <td>${escapeHtml(row.name)}</td>
       <td>${escapeHtml(row.category)}</td>
       <td><span class="status-pill status-${normalizeValue(row.status)}">${escapeHtml(row.status)}</span></td>
-      <td>${formatDate(row.updated)}</td>
-      <td class="description-cell">${highlightDescription(row.description, query)}</td>
+      <td class="description-cell">${highlightDescription(truncateText(row.description), query)}</td>
     </tr>
   `).join("");
 
